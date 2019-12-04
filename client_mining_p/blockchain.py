@@ -10,6 +10,12 @@ from flask import Flask, jsonify, request
 
 DIFFICULTY = 3
 
+"""
+1) function for creating as new block with required info - new_block
+2) function to hash a previous block into a new hash string, repeatedly, until certain criteria are met - valid_proof
+3) function that calls/invokes hashing function - proof_of_work
+"""
+
 class Blockchain(object):
     def __init__(self):
         self.chain = []
@@ -83,22 +89,22 @@ class Blockchain(object):
     def last_block(self):
         return self.chain[-1]
 
-    def proof_of_work(self, block):
-        """
-        Simple Proof of Work Algorithm
-        Stringify the block and look for a proof.
-        Loop through possibilities, checking each one against `valid_proof`
-        in an effort to find a number that is a valid proof
-        :return: A valid proof for the provided block
-        """
-        # TODO
-        # Take last_block, jsonify it, run it thru valid_proof until it comes out as true
-        block_string = json.dumps(self.last_block, sort_keys=True)
-        proof = 0
-        while self.valid_proof(block_string, proof) is False:
-            proof += 1
-        return proof
-        # return proof
+    # def proof_of_work(self, block):
+    #     """
+    #     Simple Proof of Work Algorithm
+    #     Stringify the block and look for a proof.
+    #     Loop through possibilities, checking each one against `valid_proof`
+    #     in an effort to find a number that is a valid proof
+    #     :return: A valid proof for the provided block
+    #     """
+    #     # TODO
+    #     # Take last_block, jsonify it, run it thru valid_proof until it comes out as true
+    #     block_string = json.dumps(self.last_block, sort_keys=True)
+    #     proof = 0
+    #     while self.valid_proof(block_string, proof) is False:
+    #         proof += 1
+    #     return proof
+    #     # return proof
 
     @staticmethod
     def valid_proof(block_string, proof):
@@ -133,28 +139,47 @@ node_identifier = str(uuid4()).replace('-', '')
 blockchain = Blockchain()
 
 
-@app.route('/mine', methods=['GET'])
+@app.route('/mine', methods=['POST'])
 def mine():
-    # Run the proof of work algorithm to get the next proof
-    proof = blockchain.proof_of_work(blockchain.last_block)
-    # Forge the new Block by adding it to the chain with the proof
-    previous_hash = blockchain.hash(blockchain.last_block)
-    new_block = blockchain.new_block(proof, previous_hash)
+    data = request.get_json()
+    if data.post_data is True and data.id is True:
+        response = "Success"
+        blockchain.new_block(data.post_data, data.id)
+        return jsonify(response), 400
+    else:
+        response = "Failure"
+        return jsonify(response), 404
 
-    response = {
-        # TODO: Send a JSON response with the new block
-        "block": new_block
-    }
+    # # Run the proof of work algorithm to get the next proof
+    # proof = blockchain.proof_of_work(blockchain.last_block)
+    # # Forge the new Block by adding it to the chain with the proof
+    # previous_hash = blockchain.hash(blockchain.last_block)
+    # new_block = blockchain.new_block(proof, previous_hash)
 
-    return jsonify(response), 200
+    # response = {
+    #     # TODO: Send a JSON response with the new block
+    #     "block": new_block
+    # }
 
+    # return jsonify(response), 200
 
 @app.route('/chain', methods=['GET'])
 def full_chain():
     response = {
         # TODO: Return the chain and its current length
         "length": len(blockchain.chain),
-        "chain": blockchain.chain
+        "chain": blockchain.chain,
+    }
+    return jsonify(response), 200
+
+@app.route('/last_block', methods=['GET'])
+def lastBlock():
+    last_block = blockchain.last_block()
+    response = {
+        # TODO: Return the chain and its current length
+        "length": len(blockchain.chain),
+        "chain": blockchain.chain,
+        "last_block": last_block
     }
     return jsonify(response), 200
 
