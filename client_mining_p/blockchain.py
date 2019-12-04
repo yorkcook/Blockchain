@@ -174,12 +174,9 @@ def full_chain():
 
 @app.route('/last_block', methods=['GET'])
 def lastBlock():
-    last_block = blockchain.last_block()
     response = {
         # TODO: Return the chain and its current length
-        "length": len(blockchain.chain),
-        "chain": blockchain.chain,
-        "last_block": last_block
+        "last_block": blockchain.last_block
     }
     return jsonify(response), 200
 

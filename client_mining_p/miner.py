@@ -3,7 +3,7 @@ import requests
 
 import sys
 import json
-
+from flask import Flask, jsonify, request
 DIFFICULTY = 3
 
 """
@@ -32,7 +32,7 @@ def proof_of_work(last_block):
         return proof
         # return proof
 
-@staticmethod
+
 def valid_proof(block_string, proof):
         """
         Validates the Proof:  Does hash(block_string, proof) contain 3
@@ -77,6 +77,7 @@ if __name__ == '__main__':
         r = requests.get(url=node + "/last_block")
         # Handle non-json response
         try:
+            print("Count is ", count)
             data = r.json()
         except ValueError:
             print("Error:  Non-json response")
@@ -85,7 +86,10 @@ if __name__ == '__main__':
             break
 
         # TODO: Get the block from `data` and use it to look for a new proof
-        new_proof = proof_of_work(data.last_block)
+        print("Got thru try-except")
+        print("Data is ", data)
+        print("Data last block is ", data["last_block"])
+        new_proof = proof_of_work(data["last_block"])
         coins += 1
         print("New Proof found, coins are: ", coins)
 
@@ -93,12 +97,42 @@ if __name__ == '__main__':
 
         post_data = {"proof": new_proof, "id": id}
 
-        # f = open("my_id.txt", "r+")
-        # name = f.write("Name: Greg")
-        # print("Name is ", name)
-        # f.close()
+        # sending get request and saving the response as response object 
+        r = requests.get(url = URL, params = PARAMS) 
+        
+        # extracting data in json format 
+        data = r.json() 
+
+        # data to be sent to api 
+        data = {'api_dev_key':API_KEY, 
+                'api_option':'paste', 
+                'api_paste_code':source_code, 
+                'api_paste_format':'python'} 
+        
+        # sending post request and saving response as response object 
+        r = requests.post(url = API_ENDPOINT, data = data) 
+        
+        # extracting response text  
+        pastebin_url = r.text 
+        print("The pastebin URL is:%s"%pastebin_url) 
+  
+
+        r = requests.post(url=node + "/mine")
+        # Handle non-json response
+        try:
+            post_data = r.json()
+        except ValueError:
+            print("Error:  Non-json response")
+            print("Response returned:")
+            print(r)
+            break
+
+        f = open("my_id.txt", "r+")
+        name = f.write("Name: Greg")
+        print("Name is ", name)
+        f.close()
 
         # TODO: If the server responds with a 'message' 'New Block Forged'
         # add 1 to the number of coins mined and print it.  Otherwise,
         # print the message from the server.
-        pass
+        

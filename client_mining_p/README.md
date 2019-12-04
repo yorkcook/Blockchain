@@ -24,9 +24,9 @@ X Return a message indicating success or failure.  Remember, a valid proof shoul
 
 *Client Mining*
 Create a client application that will:
-* Get the last block from the server
-* Run the `proof_of_work` function until a valid proof is found, validating or rejecting each attempt.  Use a copy of `valid_proof` to assist.
-* Print messages indicating that this has started and finished.
+X Get the last block from the server
+X Run the `proof_of_work` function until a valid proof is found, validating or rejecting each attempt.  Use a copy of `valid_proof` to assist.
+X Print messages indicating that this has started and finished.
 * Modify it to generate proofs with *6* leading zeroes.
 * Print a message indicating the success or failure response from the server
 * Add any coins granted to a simple integer total, and print the amount of coins the client has earned
