@@ -72,7 +72,7 @@ if __name__ == '__main__':
     # while True:
     count = 0
     coins = 0
-    while count < 10:
+    while count < 5:
         count += 1
         r = requests.get(url=node + "/last_block")
         # Handle non-json response
@@ -96,31 +96,11 @@ if __name__ == '__main__':
         # When found, POST it to the server {"proof": new_proof, "id": id}
 
         post_data = {"proof": new_proof, "id": id}
-
-        # sending get request and saving the response as response object 
-        r = requests.get(url = URL, params = PARAMS) 
-        
-        # extracting data in json format 
-        data = r.json() 
-
-        # data to be sent to api 
-        data = {'api_dev_key':API_KEY, 
-                'api_option':'paste', 
-                'api_paste_code':source_code, 
-                'api_paste_format':'python'} 
-        
-        # sending post request and saving response as response object 
-        r = requests.post(url = API_ENDPOINT, data = data) 
-        
-        # extracting response text  
-        pastebin_url = r.text 
-        print("The pastebin URL is:%s"%pastebin_url) 
-  
-
-        r = requests.post(url=node + "/mine")
-        # Handle non-json response
+        print("Post_data is ", post_data)
+        r = requests.post(url=node + "/mine", json = post_data) 
         try:
-            post_data = r.json()
+            data = r.json()
+            print("Data back from post is ", data)
         except ValueError:
             print("Error:  Non-json response")
             print("Response returned:")

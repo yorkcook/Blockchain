@@ -141,13 +141,19 @@ blockchain = Blockchain()
 
 @app.route('/mine', methods=['POST'])
 def mine():
+    print("Endpoint has been hit")
     data = request.get_json()
-    if data.post_data is True and data.id is True:
-        response = "Success"
-        blockchain.new_block(data.post_data, data.id)
+    print("Data proof is ", data["proof"])
+    if data["proof"]:
+        print("Got thru if-statement")
+        new = blockchain.new_block(data["proof"])
+        response = {
+            "Success": new
+        }
         return jsonify(response), 400
     else:
-        response = "Failure"
+        print("Failure")
+        response = {"Failure": data}
         return jsonify(response), 404
 
     # # Run the proof of work algorithm to get the next proof
