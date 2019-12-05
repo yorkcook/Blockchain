@@ -86,9 +86,9 @@ if __name__ == '__main__':
             break
 
         # TODO: Get the block from `data` and use it to look for a new proof
-        print("Got thru try-except")
-        print("Data is ", data)
-        print("Data last block is ", data["last_block"])
+        #print("Got thru try-except")
+        #print("Data is ", data)
+        #print("Data last block is ", data["last_block"])
         new_proof = proof_of_work(data["last_block"])
         coins += 1
         print("New Proof found, coins are: ", coins)
@@ -96,7 +96,7 @@ if __name__ == '__main__':
         # When found, POST it to the server {"proof": new_proof, "id": id}
 
         post_data = {"proof": new_proof, "id": id}
-        print("Post_data is ", post_data)
+        #print("Post_data is ", post_data)
         r = requests.post(url=node + "/mine", json = post_data) 
         try:
             data = r.json()
