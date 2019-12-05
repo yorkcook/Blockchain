@@ -145,7 +145,7 @@ def mine():
     data = request.get_json()
     #print("Data proof is ", data["proof"])
     if data["proof"]:
-        print("Got thru if-statement")
+        #print("Got thru if-statement")
         previous = blockchain.hash(blockchain.last_block)
         new = blockchain.new_block(data["proof"], previous)
         response = {
